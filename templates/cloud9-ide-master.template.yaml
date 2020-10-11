@@ -451,6 +451,7 @@ Resources:
         PublicSubnet1CIDR: !Ref PublicSubnet1CIDR
         PublicSubnet2CIDR: !Ref PublicSubnet2CIDR
         NumberOfAZs: !Ref NumberOfAZs
+        CreateNATGateways: 'true'
   IDEStack:
     Type: AWS::CloudFormation::Stack
     Properties:
