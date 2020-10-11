@@ -193,7 +193,7 @@ Parameters:
   EBSVolumeSize:
     Description: The desired size (in GB) of the Amazon EBS volume for your Cloud9 IDE.
     Type: Number
-    Default: 16
+    Default: 100
   EnableBastionStack:
     AllowedValues: ['true', 'false']
     Default: 'false'
