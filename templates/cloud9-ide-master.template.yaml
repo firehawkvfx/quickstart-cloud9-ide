@@ -10,6 +10,7 @@ Metadata:
         Parameters:
           - AvailabilityZones
           - NumberOfAZs
+          - CreateNATGateways
           - PrivateSubnet1CIDR
           - PrivateSubnet2CIDR
           - PublicSubnet1CIDR
@@ -49,6 +50,8 @@ Metadata:
         default: Stop time
       NumberOfAZs:
         default: Number of Availability Zones
+      CreateNATGateways:
+        default: Enable NAT gateway for private subnets to have outbound internat access.
       PrivateSubnet1CIDR:
         default: Private subnet 1 CIDR
       PrivateSubnet2CIDR:
@@ -190,7 +193,7 @@ Parameters:
   EBSVolumeSize:
     Description: The desired size (in GB) of the Amazon EBS volume for your Cloud9 IDE.
     Type: Number
-    Default: 100
+    Default: 16
   EnableBastionStack:
     AllowedValues: ['true', 'false']
     Default: 'false'
@@ -204,6 +207,11 @@ Parameters:
       - 2
       - 3
       - 4
+  CreateNATGateways:
+    AllowedValues: ['true', 'false']
+    Default: 'true'
+    Description: (Optional) Choose false to disable NAT gateways for the private subnets.
+    Type: String
   OwnerArn:
     Description: 
       The Amazon Resource Name (ARN) of the environment owner. This ARN can be the 
@@ -437,7 +445,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub 
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Sub '${AWS::Region}', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
@@ -451,7 +459,7 @@ Resources:
         PublicSubnet1CIDR: !Ref PublicSubnet1CIDR
         PublicSubnet2CIDR: !Ref PublicSubnet2CIDR
         NumberOfAZs: !Ref NumberOfAZs
-        CreateNATGateways: 'true'
+        CreateNATGateways: !Ref CreateNATGateways
   IDEStack:
     Type: AWS::CloudFormation::Stack
     Properties:
